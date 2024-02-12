@@ -21,7 +21,7 @@ with open("kenya_locations.csv", "r") as csvfile:
             "name":"Kenya",
             "active":"true",
         }
-    response = requests.put("{}/{}".format(FHIR_BASE, 0), json=data).json()
+    response = requests.put("{}/{}".format(FHIR_BASE, 0), json=data, ).json()
     print(response)
     for row in csvreader:
         if row['SubCounty'] == '': # is county
@@ -30,9 +30,9 @@ with open("kenya_locations.csv", "r") as csvfile:
                 "id": row['id'],
                 "name":row['County'],
                 "active":"true",
-                "partOf":{"reference":"Location/0"}
+                "partOf":{"reference":"Location/0", "display":"Kenya"}
             }
-            response = requests.put("{}/{}".format(FHIR_BASE, row['id']), json=data).json()
+            response = requests.put("{}/{}".format(FHIR_BASE, row['id']), json=data, ).json()
             print(response)
         elif row['SubCounty'] != '':
             sub_county = {"name":row['SubCounty'], "county":row['County']}
@@ -43,9 +43,9 @@ with open("kenya_locations.csv", "r") as csvfile:
                 "id":(row["SubCounty"]).upper(). replace(" ", "-").replace("'", ""),
                 "name":(row["SubCounty"]).upper(),
                 "active":"true",
-                "partOf":{"reference":"Location/{}".format((row['County']).upper(). replace(" ", "-").replace("'", ""))}
+                "partOf":{"reference":"Location/{}".format((row['County']).upper(). replace(" ", "-").replace("'", "")), "display": row["County"].upper()}
                 }
-                response = requests.put("{}/{}".format(FHIR_BASE, sub_county['name'].upper(). replace(" ", "-").replace("'", "")), json=data).json()
+                response = requests.put("{}/{}".format(FHIR_BASE, sub_county['name'].upper(). replace(" ", "-").replace("'", "")), json=data, ).json()
                 print(response)
                 sub_counties.append(row['SubCounty'])
             ward = {"name":row['Ward'], "sub_county":row['SubCounty'] }
@@ -54,9 +54,9 @@ with open("kenya_locations.csv", "r") as csvfile:
                 "id": ward['name'].upper().replace(" ", "-").replace("'", ""),
                 "name": (ward['name']).upper(),
                 "active":"true",
-                "partOf":{"reference":"Location/{}".format(row['SubCounty'].upper(). replace(" ", "-").replace("'", ""))}
+                "partOf":{"reference":"Location/{}".format(row['SubCounty'].upper(). replace(" ", "-").replace("'", "")), "display": row["SubCounty"].upper()}
             }
-            response = requests.put("{}/{}".format(FHIR_BASE, ward['name'].upper(). replace(" ", "-").replace("'", "")), json=data).json()
+            response = requests.put("{}/{}".format(FHIR_BASE, ward['name'].upper(). replace(" ", "-").replace("'", "")), json=data, ).json()
             print(response)
 
 
